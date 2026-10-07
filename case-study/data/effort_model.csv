@@ -1,0 +1,17 @@
+type,item,value,note
+Assumption,Minutes per outbound email,10,HR estimate
+Assumption,Cross-checking schedules per 5 candidates (min),60,HR estimate
+Measured,Outbound emails per arranged candidate (manual sample n=8),2.9,Gmail threads Apr-Aug 2026
+Measured,"Extra emails HR sent manually in agent era (hiring manager, 14 candidates)",5,Gmail
+Estimate,Batch approval time per batch (min),5,
+Estimate,Bounce handling per case (min),5,
+Manual model,Invites: 16 x 10,160,min
+Manual model,Follow-ups: 10 arranged x 1.9 x 10,190,min
+Manual model,Cross-check: 14/5 x 60,168,min
+Manual model,TOTAL (14 candidates),518,min = 8.6 h = 37 min/candidate
+Agent actual,Batch approvals: 4 x 5,20,min
+Agent actual,Follow-ups: 5 x 10,50,min
+Agent actual,Bounces: 3 x 5,15,min
+Agent actual,Cross-check,0,min
+Agent actual,TOTAL (14 candidates),85,min = 1.4 h = 6 min/candidate
+Result,Saved,433,"min = 7.2 h, -84%"

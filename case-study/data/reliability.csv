@@ -1,0 +1,9 @@
+metric,value
+"Invitations sent (agent era, hiring manager)","16 (14 candidates, 2 re-sends)"
+Replies received,11 / 14 (79%)
+Round-1 interviews auto-booked by agent,9
+Slot conflicts auto-resolved without HR,3
+Bounced invites caught same run,3 / 3
+Double bookings,0
+Manual-era errors observed,subject typo (misspelled role); 2 duplicate invites; wrong candidate name in a reply
+Agent-era known weak spot,"browser-based sheet sync (login wall, stale rows)"

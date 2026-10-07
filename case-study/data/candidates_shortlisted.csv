@@ -1,0 +1,26 @@
+candidate_id,era,batch,cv_given_to_manager,manager_decision,invite_sent,note,round1_date,next_round_date,offer_date,onboard_date,outcome
+P01,manual,Pre-pilot,2026-05-22,shortlist,2026-06-01,,2026-06-03,,,,Reject
+P02,manual,Pre-pilot,2026-05-29,shortlist,2026-06-01,,2026-06-03,,,,Reject (better offer)
+P03,manual,Pre-pilot,2026-05-29,shortlist,2026-06-01,duplicate invite sent (typo fix),2026-06-02,,,,Reject
+P04,manual,Pre-pilot,2026-05-29,shortlist,2026-06-01,,,,,,Reject (verification)
+P05,manual,Pre-pilot,2026-06-01,shortlist,,,2026-06-09,,,,No next round
+P06,manual,Pre-pilot,2026-06-01,shortlist,2026-06-01,asked for later date,2026-06-08,,,,No next round
+P07,manual,Pre-pilot,2026-06-04,shortlist,,,,,,,Not interviewed
+B1-01,manual,Batch 1,2026-06-23,shortlist,2026-07-07,3 outbound emails to fix time,2026-07-07,,,,Reject
+B1-02,manual,Batch 1,2026-06-24,shortlist,2026-07-07,,2026-07-10,2026-07-20,2026-07-23,2026-07-28,Hired
+B1-03,manual,Batch 1,2026-06-29,shortlist,2026-07-07,,2026-07-09,,,,Reject
+B1-04,manual,Batch 1,2026-07-07,shortlist,,,,,,,Not interviewed
+B2-01,agent,Batch 2,2026-08-31,shortlist,2026-09-01,original email bounced; replied from new address,2026-09-09,2026-09-23,2026-09-28,2026-10-08,Hired
+B2-02,agent,Batch 2,2026-08-31,shortlist,2026-09-01,,2026-09-08,,,,Reject
+B2-03,agent,Batch 2,2026-08-31,shortlist,2026-09-01,slot conflict auto-resolved,2026-09-08,,,,Reject
+B2-04,agent,Batch 2,2026-08-31,shortlist,2026-09-01,no reply,,,,,No reply
+B2-05,agent,Batch 2,2026-08-31,shortlist,2026-09-01,"rescheduling thread, manual",,,,,Reject
+B2-06,agent,Batch 2,2026-08-31,shortlist,2026-09-01,no reply,,,,,No reply
+B3-01,agent,Batch 3,2026-09-09,shortlist,2026-09-09,,2026-09-11,2026-09-23,,,Next round done; not hired
+B3-02,agent,Batch 3,2026-09-09,shortlist,2026-09-09,"out-of-window preference, fallback slot auto-picked",2026-09-11,,,,
+B3-03,agent,Batch 3,2026-09-09,shortlist,2026-09-09,,2026-09-11,,,,
+B3-04,agent,Batch 3,2026-09-09,shortlist,2026-09-09,invite bounced (DMARC),,,,,Bounced
+B4-01,agent,Batch 4,2026-09-16,shortlist,2026-09-21,,2026-09-24,,,,
+B4-02,agent,Batch 4,2026-09-16,shortlist,2026-09-21,,2026-09-24,,,,
+B4-03,agent,Batch 4,2026-09-21,shortlist,2026-09-21,,2026-09-23,2026-10-07,,,In progress
+B4-04,agent,Batch 4,2026-09-21,shortlist,2026-09-23,first address bounced; resent 2026-09-28,2026-09-29,2026-10-07,,,In progress

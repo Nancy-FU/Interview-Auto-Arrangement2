@@ -1,0 +1,8 @@
+hiring_line,period,candidates_contacted,interviews_incl_2nd_round
+Hiring line A - QA / Golang / System Operation,2026-04 to 05,26,11
+Hiring line B - Frontend & Golang,2026-01 to 03,18,7
+Hiring line C - DevOps & Prompt Engineer,2026-01 to 04,19,4
+Hiring line D - Trader (manual period),2026-07 to 08,4,5
+TOTAL,,67,27
+
+calc,manual: 67x10 + 25x1.9x10 + 67/5x60 = 1949 min = 32.5 h; agent: 67x6 = 402 min = 6.7 h; saved 25.8 h; annualised ~97 candidates/yr x 31 min = ~50 h/yr

@@ -1,0 +1,9 @@
+metric,manual,agent,change,source
+CV given -> invite sent (median),5.5 days,19 hours,-86%,Drive upload time vs Gmail sent time
+CV given -> round 1 (mean),9.5 days,6 days,-37%,Drive upload vs interview date
+CV given -> round 1 (median),9 days,8 days,-11%,same; window set by interviewer availability
+Round 1 -> next round,10 days,8-14 days,flat,interviewer-gated
+CV given -> offer (hired candidates),29 days,28 days,flat,offer emails
+CV given -> onboard (hired candidates),34 days,38 days,flat,onboarding emails
+Candidate reply -> booking (slowest),9 days,<1 day,,Gmail reply vs calendar created / next email
+Candidate reply -> booking (fastest),,9 minutes,,calendar created timestamp
