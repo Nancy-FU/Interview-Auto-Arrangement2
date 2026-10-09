@@ -1,0 +1,278 @@
+<title>Agent Build Time Log</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+SC:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: consulting-style log — summary tiles, build timeline, run reliability, method, raw data, AI-reader notes. Same visual system as the case-study board. */
+:root{
+  --bg:#ffffff; --panel:#f4f6f8; --ink:#051c2c; --muted:#5a6b78; --rule:#d5dce2;
+  --after:#2251ff; --after-soft:#e6ecff; --before:#a3adb6; --ok:#1f7a3f; --bad:#b3261e; --on-bar:#ffffff;
+  --f-head:"Source Serif 4",Georgia,"Songti SC",serif;
+  --f-body:"IBM Plex Sans","IBM Plex Sans SC","PingFang SC",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#071722; --panel:#0e2333; --ink:#e8eef3; --muted:#9aabb8; --rule:#22394a;
+  --after:#6f8cff; --after-soft:#16264f; --before:#5e6f7c; --ok:#6bcf8f; --bad:#ff8a80; --on-bar:#071722; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#071722; --panel:#0e2333; --ink:#e8eef3; --muted:#9aabb8; --rule:#22394a;
+  --after:#6f8cff; --after-soft:#16264f; --before:#5e6f7c; --ok:#6bcf8f; --bad:#ff8a80; --on-bar:#071722; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.6;padding-inline:16px;padding-block:0 72px}
+.wrap{max-width:1000px;margin-inline:auto;display:flex;flex-direction:column;gap:44px}
+h1,h2,h3{font-family:var(--f-head);font-weight:600;text-wrap:balance;margin:0;line-height:1.25}
+h1{font-size:clamp(1.8rem,4.5vw,2.5rem)}
+h2{font-size:1.4rem}
+h3{font-size:1.05rem}
+p{margin:0}
+.num{font-variant-numeric:tabular-nums}
+.kicker{font-size:.72rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--after)}
+.muted{color:var(--muted)}
+section{display:flex;flex-direction:column;gap:16px;border-top:2px solid var(--ink);padding-top:18px}
+header{padding-top:48px;display:flex;flex-direction:column;gap:14px}
+.sub{font-size:1.05rem;color:var(--muted);max-width:72ch}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.kpi{background:var(--panel);padding:16px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.kpi .l{font-size:.78rem;color:var(--muted)}
+.kpi .v{font-family:var(--f-head);font-size:2rem;font-weight:600;line-height:1;color:var(--after)}
+.kpi .b{font-size:.78rem;color:var(--muted)}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.86rem;min-width:620px}
+th{font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;text-align:left;padding:8px 12px;border-bottom:2px solid var(--ink)}
+td{padding:9px 12px;border-bottom:1px solid var(--rule);vertical-align:top}
+td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.tot td{font-weight:600;border-top:2px solid var(--ink)}
+.hb{display:grid;grid-template-columns:70px minmax(0,1fr);gap:8px 12px;align-items:center;font-size:.82rem}
+.hb .k{color:var(--muted);font-variant-numeric:tabular-nums}
+.hb .bar{height:18px;background:var(--after);display:flex;align-items:center;padding-inline:6px;font-size:.72rem;font-weight:600;color:var(--on-bar);min-width:fit-content}
+.src{font-size:.72rem;color:var(--muted);border-top:1px solid var(--rule);padding-top:6px}
+.pill{display:inline-block;font-size:.7rem;font-weight:600;padding:1px 8px}
+.pill.ok{color:var(--ok);background:var(--panel)} .pill.bad{color:var(--bad);background:var(--panel)} .pill.run{color:var(--after);background:var(--after-soft)}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.panel{background:var(--panel);padding:18px;display:flex;flex-direction:column;gap:8px;min-width:0}
+ul.clean{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px}
+details{border:1px solid var(--rule);padding:12px 16px}
+summary{cursor:pointer;font-weight:600}
+summary:focus-visible{outline:2px solid var(--after);outline-offset:2px}
+pre{font-family:var(--f-mono);font-size:.75rem;background:var(--panel);padding:12px;overflow-x:auto;white-space:pre;margin:12px 0 0}
+.copy{font:inherit;font-size:.8rem;padding:6px 12px;border:1px solid var(--ink);background:var(--bg);color:var(--ink);cursor:pointer;margin-top:10px}
+.copy:focus-visible{outline:2px solid var(--after);outline-offset:2px}
+footer{font-size:.75rem;color:var(--muted);border-top:1px solid var(--rule);padding-top:12px}
+@media (max-width:820px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.grid2{grid-template-columns:1fr}}
+@media (max-width:420px){.kpis{grid-template-columns:1fr}}
+</style>
+
+<div class="wrap">
+
+<header>
+  <span class="kicker">Hiring Coordinator Agent · Build &amp; run log · Aug – Oct 2026</span>
+  <h1>约 2 小时的对话式搭建，4 周内上线全自动运行，此后无一次规则性故障</h1>
+  <p class="sub">这一页记录搭建面试协调 Agent 实际花了多少时间、上线后运行得怎么样，以及每个数字是怎么算出来的。原始数据都在页面底部，方便在其他账号或其他 AI 里继续追问。</p>
+</header>
+
+<section>
+  <span class="kicker">Summary</span>
+  <h2>投入少、跨度长：大部分日历时间在等真实候选人回邮件</h2>
+  <div class="kpis">
+    <div class="kpi"><span class="l">搭建期在线投入</span><span class="v num">≈2 h</span><span class="b">121 分钟，保守口径</span></div>
+    <div class="kpi"><span class="l">搭建期工作天数</span><span class="v num">5 天</span><span class="b">另有 1 天 1 分钟收尾</span></div>
+    <div class="kpi"><span class="l">从 PRD 到全自动</span><span class="v num">4 周</span><span class="b">8/5 写 PRD → 9/1 定时任务上线</span></div>
+    <div class="kpi"><span class="l">上线后定时运行</span><span class="v num">77 次</span><span class="b">0 次规则 / 判断错误</span></div>
+  </div>
+</section>
+
+<section>
+  <span class="kicker">Build timeline</span>
+  <h2>两次集中投入完成搭建：8/5 写规则，9/1 跑通真实批次并上线</h2>
+  <div class="hb" role="img" aria-label="每天在线分钟数：8/4 4 分钟，8/5 53 分钟，9/1 31 分钟，9/2 8 分钟，9/21 25 分钟，9/25 1 分钟">
+    <span class="k">8/4</span><div class="bar" style="width:7.5%">4 min</div>
+    <span class="k">8/5</span><div class="bar" style="width:100%">53 min</div>
+    <span class="k">9/1</span><div class="bar" style="width:58%">31 min</div>
+    <span class="k">9/2</span><div class="bar" style="width:15%">8 min</div>
+    <span class="k">9/21</span><div class="bar" style="width:47%">25 min</div>
+    <span class="k">9/25</span><div class="bar" style="width:2%">1 min</div>
+  </div>
+  <div class="tbl"><table>
+    <thead><tr><th>日期</th><th>时段（香港时间）</th><th>在线</th><th>你的消息数</th><th>做了什么</th></tr></thead>
+    <tbody>
+      <tr><td class="n">2026-08-04</td><td class="n">17:45–17:50</td><td class="n">4 min</td><td class="n">1</td><td>提出需求：把「发邮件给时段 → 候选人回覆 → 去日历订时间」这个流程自动化</td></tr>
+      <tr><td class="n">2026-08-05</td><td class="n">14:18–16:05</td><td class="n">53 min</td><td class="n">7</td><td>讨论流程、确定规则、写 PRD 和 CHANGELOG，建 Git 仓库（尚未接触真实数据）</td></tr>
+      <tr><td class="n">2026-09-01</td><td class="n">11:53–17:57</td><td class="n">31 min</td><td class="n">11</td><td>首个真实批次：读 6 份简历、填表、整批发出邀约、第一次自动订档；发现退信；上线每 3 小时的定时任务</td></tr>
+      <tr><td class="n">2026-09-02</td><td class="n">09:23–09:31</td><td class="n">8 min</td><td class="n">3</td><td>定时任务第一次自动处理 2 条回覆后，补 3 条规则：默认 45 分钟、「日期 + 下午」不算模糊、冲突自动换档；新建 Gmail「已安排」标签</td></tr>
+      <tr><td class="n">2026-09-21</td><td class="n">12:07–16:32</td><td class="n">25 min</td><td class="n">11</td><td>第 4 批加入范围；设计二面流程和拒信起草；确认大附件只能手动加；仓库加 README 与分支规范</td></tr>
+      <tr><td class="n">2026-09-25</td><td class="n">16:27–16:28</td><td class="n">1 min</td><td class="n">1</td><td>收尾</td></tr>
+      <tr class="tot"><td>合计</td><td></td><td class="n">≈2 h（121 min）</td><td class="n">34</td><td></td></tr>
+    </tbody>
+  </table></div>
+  <span class="src">来源：本机 Claude Code 会话记录的消息时间戳。</span>
+</section>
+
+<section>
+  <span class="kicker">Run reliability</span>
+  <h2>上线后 77 次定时运行，失败的都是网络或账号权限问题</h2>
+  <div class="grid2">
+    <div class="tbl"><table style="min-width:0">
+      <thead><tr><th>指标</th><th>数值</th></tr></thead>
+      <tbody>
+        <tr><td>定时任务总运行次数</td><td class="n">77（每 3 小时一次，App 开着时运行）</td></tr>
+        <tr><td>Agent 自身累计运行时间</td><td class="n">≈8.3 h（不占用你的时间）</td></tr>
+        <tr><td>最近 50 次中成功</td><td class="n">40</td></tr>
+        <tr><td>最近 50 次中失败</td><td class="n">9（网络 8 次，账号权限 1 次）</td></tr>
+        <tr><td>规则或判断出错</td><td class="n">0</td></tr>
+        <tr><td>失败后是否补跑</td><td class="n">是，下一轮自动补上</td></tr>
+      </tbody>
+    </table></div>
+    <div class="panel">
+      <h3>设计上由人处理的环节（不算故障）</h3>
+      <ul class="clean">
+        <li>两个批次遇到 Google 登录墙，表格同步由你手动补</li>
+        <li>二面邀约的申请表附件由你手动加</li>
+        <li>改期、拒信等外发邮件需要你确认后才发送</li>
+        <li>模糊回覆、退信汇总到「NEEDS HR」由你决定</li>
+      </ul>
+    </div>
+  </div>
+  <div class="tbl"><table>
+    <thead><tr><th>失败时间（UTC）</th><th>原因</th></tr></thead>
+    <tbody>
+      <tr><td class="n">2026-09-21 10:09</td><td>连接被拒（ConnectionRefused）</td></tr>
+      <tr><td class="n">2026-09-22 04:11</td><td>连接被拒（ConnectionRefused）</td></tr>
+      <tr><td class="n">2026-09-26 00:45</td><td>连接被拒（ECONNREFUSED）</td></tr>
+      <tr><td class="n">2026-09-26 10:11</td><td>账号访问权限临时被停用</td></tr>
+      <tr><td class="n">2026-09-26 22:22</td><td>连接中断（ECONNRESET）</td></tr>
+      <tr><td class="n">2026-09-28 12:52</td><td>连接被拒（ECONNREFUSED）</td></tr>
+      <tr><td class="n">2026-09-29 01:30</td><td>连接被拒（ECONNREFUSED）</td></tr>
+      <tr><td class="n">2026-10-04 18:27</td><td>连接被拒（ECONNREFUSED）</td></tr>
+      <tr><td class="n">2026-10-05 01:47</td><td>连接被拒（ECONNREFUSED）</td></tr>
+    </tbody>
+  </table></div>
+  <span class="src">来源：定时任务 interview-reply-check 的运行记录（工具最多返回最近 50 次，更早的 27 次未逐条列出）。</span>
+</section>
+
+<section>
+  <span class="kicker">Method</span>
+  <h2>统计口径与可能的偏差</h2>
+  <div class="grid2">
+    <div class="panel">
+      <h3>怎么算的</h3>
+      <ul class="clean">
+        <li>读取本机会话记录里每条消息的时间戳。</li>
+        <li>相邻两条消息间隔 <b>不超过 20 分钟</b> 才计为在线时间；超过就视为离开。</li>
+        <li>时间换算为香港时间（UTC+8）。</li>
+        <li>主会话在 9/21 分出一个分支（fork）继续到 9/25，分支包含全部历史，所以按分支统计，不重复计算。</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3>可能偏低的原因</h3>
+      <ul class="clean">
+        <li>不含离开屏幕思考、核对表格、回邮件的时间。</li>
+        <li>你在定时任务运行窗口里直接和 Claude 对话的时间未计入。加上这部分约 <b>2.5 小时</b>。</li>
+        <li>不含之后做案例页、资料包、上传 GitHub 的时间（那些属于展示，不属于搭建）。</li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel">
+    <h3>可以直接用的表述</h3>
+    <p>「约 2 小时对话式搭建，4 周内上线全自动运行，此后 77 次定时运行无规则性故障。」</p>
+    <p class="muted">English: Built in about 2 hours of conversational sessions, fully automated within 4 weeks, then 77 scheduled runs with zero rule or judgement errors.</p>
+  </div>
+</section>
+
+<section>
+  <span class="kicker">For AI readers</span>
+  <h2>在其他账号或其他 AI 里继续追问时</h2>
+  <ul class="clean">
+    <li>把这个 HTML 文件交给 AI，并说「先读页面底部的 JSON 数据，再回答我的问题」。</li>
+    <li>只引用页面里有出处的数字；「在线时间」是保守估计，引用时保留这个说明。</li>
+    <li>项目成果数据（漏斗、速度、人工耗时）在本仓库的 <code>case-study/README.md</code> 和 <code>case-study/data/*.csv</code> 里。</li>
+    <li>可以问的问题示例：「按天说明我每次搭建做了什么」「如果按含追问的口径重算是多少」「把这个写成一条简历 bullet」。</li>
+  </ul>
+  <details>
+    <summary>原始数据（JSON）</summary>
+    <pre id="raw"></pre>
+    <button class="copy" id="copyBtn" type="button">复制 JSON</button>
+  </details>
+</section>
+
+<footer>
+  生成时间 2026-10-09。数据来源：本机 Claude Code 会话记录、定时任务运行记录、项目私有仓库的提交历史。
+</footer>
+
+</div>
+
+<script type="application/json" id="build-data">
+{
+  "project": "Hiring Coordinator Agent (interview scheduling automation)",
+  "generated": "2026-10-09",
+  "summary": {
+    "build_active_minutes": 121,
+    "build_active_hours_conservative": 2.0,
+    "build_active_hours_incl_scheduled_window_chats": 2.5,
+    "build_working_days": 5,
+    "user_messages_in_build_session": 34,
+    "calendar_span": "2026-08-04 to 2026-09-21",
+    "prd_written": "2026-08-05",
+    "scheduled_task_live": "2026-09-01",
+    "rules_stable_for_round1": "2026-09-02",
+    "weeks_from_prd_to_full_automation": 4
+  },
+  "method": {
+    "source": "local Claude Code session transcripts (build session and its fork) message timestamps",
+    "active_rule": "gap between consecutive messages <= 20 minutes counts as active",
+    "timezone": "Asia/Hong_Kong (UTC+8)",
+    "fork_handling": "fork contains full history, counted once",
+    "excluded": ["offline thinking / checking sheets / replying emails", "user chats inside scheduled-run windows", "case-study, packaging and GitHub publishing work"]
+  },
+  "build_days": [
+    {"date": "2026-08-04", "window_hkt": "17:45-17:50", "active_min": 4,  "user_msgs": 1,  "work": "Stated the need: automate email-slots -> candidate reply -> calendar booking"},
+    {"date": "2026-08-05", "window_hkt": "14:18-16:05", "active_min": 53, "user_msgs": 7,  "work": "Process discussion, rules, PRD + CHANGELOG, git repo init (no real data yet)"},
+    {"date": "2026-09-01", "window_hkt": "11:53-17:57", "active_min": 31, "user_msgs": 11, "work": "First real batch: 6 CVs, tracker fill, batch invites sent, first auto-booking, bounce found, scheduled task launched"},
+    {"date": "2026-09-02", "window_hkt": "09:23-09:31", "active_min": 8,  "user_msgs": 3,  "work": "After first scheduled run: 45-min default, date+afternoon not ambiguous, auto-switch on conflict; Gmail 'Arranged' label"},
+    {"date": "2026-09-21", "window_hkt": "12:07-16:32", "active_min": 25, "user_msgs": 11, "work": "Batch 4 into scope; second-round + rejection design; attachment-size limit; README + branch rules"},
+    {"date": "2026-09-25", "window_hkt": "16:27-16:28", "active_min": 1,  "user_msgs": 1,  "work": "Wrap-up"}
+  ],
+  "runs": {
+    "task_id": "interview-reply-check",
+    "schedule": "every 3 hours (7 */3 * * *), runs while the app is open",
+    "total_runs": 77,
+    "agent_runtime_hours": 8.3,
+    "last_50": {"succeeded": 40, "failed": 9, "running": 1},
+    "rule_or_judgement_errors": 0,
+    "failures_utc": [
+      {"at": "2026-09-21T10:09", "reason": "ConnectionRefused"},
+      {"at": "2026-09-22T04:11", "reason": "ConnectionRefused"},
+      {"at": "2026-09-26T00:45", "reason": "ECONNREFUSED"},
+      {"at": "2026-09-26T10:11", "reason": "Account access temporarily disabled"},
+      {"at": "2026-09-26T22:22", "reason": "ECONNRESET"},
+      {"at": "2026-09-28T12:52", "reason": "ECONNREFUSED"},
+      {"at": "2026-09-29T01:30", "reason": "ECONNREFUSED"},
+      {"at": "2026-10-04T18:27", "reason": "ECONNREFUSED"},
+      {"at": "2026-10-05T01:47", "reason": "ECONNREFUSED"}
+    ],
+    "human_handled_by_design": ["sheet sync when Google login wall appears (2 batches)", "second-round application-form attachments", "approval of every outbound email", "ambiguous replies and bounces in NEEDS HR"]
+  },
+  "repo_history": [
+    {"date": "2026-08-05", "commit": "Initialize Interview Scheduling automation project"},
+    {"date": "2026-09-21", "commit": "Phase 1 live evolution + Phase 2 design"},
+    {"date": "2026-09-21", "commit": "Add README: branch strategy, live-config constraint, change workflow"},
+    {"date": "2026-10-07", "commit": "Add case-study package; record attachment-size limit"},
+    {"date": "2026-10-08", "commit": "Back up scheduled-task SKILL.md into repo"}
+  ],
+  "resume_line": {
+    "zh": "约 2 小时对话式搭建，4 周内上线全自动运行，此后 77 次定时运行无规则性故障。",
+    "en": "Built in about 2 hours of conversational sessions, fully automated within 4 weeks, then 77 scheduled runs with zero rule or judgement errors."
+  }
+}
+</script>
+<script>
+(function(){
+  var raw=document.getElementById('build-data').textContent.trim();
+  var pre=document.getElementById('raw');
+  try{pre.textContent=JSON.stringify(JSON.parse(raw),null,2);}catch(e){pre.textContent=raw;}
+  document.getElementById('copyBtn').addEventListener('click',function(){
+    var btn=this;
+    var done=function(){btn.textContent='已复制';setTimeout(function(){btn.textContent='复制 JSON';},1500);};
+    var fallback=function(){var r=document.createRange();r.selectNodeContents(pre);var s=window.getSelection();s.removeAllRanges();s.addRange(r);btn.textContent='已选中，按 ⌘C 复制';};
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(pre.textContent).then(done,fallback);}else{fallback();}
+  });
+})();
+</script>

@@ -37,3 +37,4 @@ The HR stage went from days to hours, but end-to-end time-to-hire stayed flat. T
 | `data/effort_model.csv` | Assumptions and calculation |
 | `data/history_rollout.csv` | Roll-out estimate across earlier hiring lines |
 | `data/reliability.csv` | Conflicts, bounces, errors |
+| `build-time-log.html` | Build time (~2 h over 5 days) and 77 scheduled runs, with raw JSON at the bottom |
